@@ -8,7 +8,7 @@ declare namespace OSMAuth {
     interface OSMAuthInstance {
         logout(): OSMAuthInstance;
         authenticated(): boolean;
-        authenticate(callback: (error: null | ErrorEvent | XMLHttpRequest, oauth?: OSMAuthInstance) => any): any;
+        authenticate(callback: (errorOrAccessToken: { oauth_token: string, oauth_token_secret: string } | ErrorEvent | XMLHttpRequest, oauth?: OSMAuthInstance) => any): any;
         xhr(options: OSMAuthXHROptions, callback: (error: null | ErrorEvent | XMLHttpRequest, xhr: any) => any): any;
         options(): OSMAuthOptions;
         options(options: OSMAuthNewOptions): OSMAuthInstance;
