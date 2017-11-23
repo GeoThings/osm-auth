@@ -30,7 +30,10 @@ module.exports = function(o) {
 
     // TODO: detect lack of click event
     oauth.authenticate = function(callback) {
-        if (oauth.authenticated()) return callback();
+        if (oauth.authenticated()) return callback({ 
+            oauth_token: token('oauth_token'),
+            oauth_token_secret: token('oauth_token_secret')
+        }, oauth);
 
         oauth.logout();
 
@@ -112,7 +115,10 @@ module.exports = function(o) {
             var access_token = ohauth.stringQs(xhr.response);
             token('oauth_token', access_token.oauth_token);
             token('oauth_token_secret', access_token.oauth_token_secret);
-            callback(null, oauth);
+            callback({ 
+                oauth_token: access_token.oauth_token,
+                oauth_token_secret: access_token.oauth_token_secret
+            }, oauth);
         }
     };
 
