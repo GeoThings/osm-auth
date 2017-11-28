@@ -30,9 +30,9 @@ module.exports = function(o) {
 
     // TODO: detect lack of click event
     oauth.authenticate = function(callback) {
-        if (oauth.authenticated()) return callback({ 
-            oauth_token: token('oauth_token'),
-            oauth_token_secret: token('oauth_token_secret')
+        if (oauth.authenticated()) callback({ 
+            oauth_token: token('oauth_request_token'),
+            oauth_token_secret: token('oauth_request_token_secret')
         }, oauth);
 
         oauth.logout();
@@ -66,6 +66,7 @@ module.exports = function(o) {
             o.done();
             if (err) return callback(err);
             var resp = ohauth.stringQs(xhr.response);
+            token('oauth_request_token', resp.oauth_token);
             token('oauth_request_token_secret', resp.oauth_token_secret);
             var authorize_url = o.url + '/oauth/authorize?' + ohauth.qsString({
                 oauth_token: resp.oauth_token,
@@ -81,10 +82,16 @@ module.exports = function(o) {
 
         // Called by a function in a landing page, in the popup window. The
         // window closes itself.
-        window.authComplete = function(token) {
-            var oauth_token = ohauth.stringQs(token.split('?')[1]);
-            get_access_token(oauth_token.oauth_token);
-            delete window.authComplete;
+        window.authComplete = function(_token) {
+            var oauth_token = ohauth.stringQs(_token.split('?')[1]);
+            //get_access_token(oauth_token.oauth_token);
+
+            callback({ 
+                oauth_token: token('oauth_request_token'),
+                oauth_token_secret: token('oauth_request_token_secret')
+            }, oauth);
+
+            delete window.authComplete;           
         };
 
         // ## Getting an request token
